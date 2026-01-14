@@ -1,6 +1,9 @@
+import type { WorkshopForm } from "../types/workshop";
+
+const BASE_URL = "http://localhost:8000/whorshop/api/v1/workshop/";
 
 export const getAllWorkshops = async () => {
-    const res = await fetch("http://localhost:8000/whorshop/api/v1/workshop");
+    const res = await fetch(BASE_URL);
 
     if (!res.ok) {
         throw new Error(`Error HTTP: ${res.status}`);
@@ -8,3 +11,18 @@ export const getAllWorkshops = async () => {
 
     return res.json();
 } 
+export const createWorkshop = async (workshop: WorkshopForm) => {
+  const res = await fetch(BASE_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(workshop),
+  });
+
+  if (!res.ok) {
+    throw new Error(`Error HTTP: ${res.status}`);
+  }
+
+  return res.json();
+};

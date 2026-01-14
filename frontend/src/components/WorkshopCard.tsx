@@ -1,22 +1,31 @@
 import { Chip, Tooltip } from "@heroui/react";
-import { CalendarDays, EditIcon, Trash2 } from "lucide-react";
+import {  EditIcon, Trash2 } from "lucide-react";
 import type { Workshop } from "../types/workshop";
+import type { Category } from "../types/category";
 
 interface WorkshopCardProps {
   workshop: Workshop;
   onEdit?: (workshop: Workshop) => void;
   onDelete?: (id: number) => void;
+  categories: Category[]
 }
 
 export default function WorkshopCard({
-  workshop
-}: WorkshopCardProps) {
+  workshop,
+  categories
+}: WorkshopCardProps) 
+{
+
+  const getCategoryName = (id: number) => {
+    return categories.find(c => c.id === id)?.name ?? "Sin categoría";
+  }
+  
   return (
     <div className="w-full max-w-4xl rounded-xl border border-default-200 bg-default-50 p-4">
       {/* Header */}
       <div className="flex items-start justify-between">
         <Chip color="primary" variant="flat">
-          {workshop.category.name}
+          {getCategoryName(workshop.category)}
         </Chip>
 
         <div className="flex gap-3">

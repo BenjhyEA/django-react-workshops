@@ -5,5 +5,11 @@ export interface Workshop {
   name: string;
   description: string;
   start_date: string;
-  category: Category;
+  category: number;
+}
+export interface WorkshopForm {
+  name: string;
+  description: string;
+  start_date: string;
+  category: number;
 }

@@ -7,7 +7,6 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class WorkshopSerializer(serializers.ModelSerializer):
-    category = CategorySerializer(read_only=True)
     class Meta:
         model = Workshop
         fields = '__all__'
