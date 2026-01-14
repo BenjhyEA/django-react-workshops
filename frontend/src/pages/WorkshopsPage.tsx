@@ -1,8 +1,8 @@
-import { Button, useDisclosure } from "@heroui/react"
+import { Button, Input, Select, SelectItem, Tooltip, useDisclosure } from "@heroui/react"
 import WorkshopCard from "../components/WorkshopCard";
 import WorkshopModal from "../components/WorkshopFormModal";
 import ConfirmDeleteModal from "../components/ConfirmDeleteModal";
-import { Plus } from "lucide-react";
+import { ArrowDown01, ArrowUp01, Plus, SearchIcon } from "lucide-react";
 import { deleteWorkshop, getAllWorkshops } from "../api/workshop.api";
 import { useEffect, useState } from "react";
 import type { Workshop } from "../types/workshop";
@@ -20,6 +20,23 @@ function WorkshopsPage() {
   const [categories, setCategories] = useState<Category[]>([]);
 
   const [selectedWorkshop, setSelectedWorkshop] = useState<Workshop | null>(null);
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState<number | null>(null);
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+
+  const sortedWorkshops = [...workshops].sort((a, b) => {
+    if (sortOrder === 'asc') {
+      return a.name.localeCompare(b.name);
+    } else {
+      return b.name.localeCompare(a.name);
+    }
+  });
+  const filteredWorkshops = sortedWorkshops.filter((w) => {
+    const matchesSearch = w.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = categoryFilter ? w.category === categoryFilter : true;
+    return matchesSearch && matchesCategory;
+  });
 
   async function loadcategories() {
     const data = await getAllCategories();
@@ -52,13 +69,16 @@ function WorkshopsPage() {
     setSelectedWorkshop(null);
   };
 
+
   return (
     <>
+      {/* Modals */}
       <WorkshopModal
         isOpen={fromModal.isOpen}
         onOpenChange={fromModal.onOpenChange}
         categories={categories}
-        onCreated={loadWorkshops} />
+        onCreated={loadWorkshops}
+      />
 
       <ConfirmDeleteModal
         isOpen={deleteModal.isOpen}
@@ -79,15 +99,72 @@ function WorkshopsPage() {
           workshopSelect={selectedWorkshop}
         />
       )}
+      {/* Main */}
       <main className="min-h-screen flex justify-center ">
         <div className="w-200 mt-5 p-4">
           <h1 className="text-3xl font-semibold" >Catálogo de Talleres</h1>
           <div className=" my-3">
-            <Button onPress={fromModal.onOpen} color="primary" className=""> Agregar <Plus /></Button>
+            <div className="my-3 flex flex-col md:flex-row md:items-center gap-2">
+              <Input
+                isClearable
+                className="w-full md:flex-[2] rounded-xl border border-default-200"
+                placeholder="Buscar taller..."
+                startContent={<SearchIcon />}
+                value={searchTerm}
+                onValueChange={(e) => setSearchTerm(e)}
+              />
+
+              <div className="flex gap-2 w-full md:flex-1 md:min-w-[250px]">
+
+                <Select
+                  className="flex-1 rounded-xl border border-default-200"
+                  selectedKeys={categoryFilter !== null ? [String(categoryFilter)] : ["all"]}
+                  onSelectionChange={(keys) => {
+                    const selectedKey = Array.from(keys)[0];
+                    setCategoryFilter(selectedKey === "all" ? null : Number(selectedKey));
+                  }}
+                  placeholder="Todas las categorías"
+                >
+                  {[
+                    { id: "all", name: "Todas las categorías" },
+                    ...categories.map(cat => ({ id: String(cat.id), name: cat.name }))
+                  ].map((cat) => (
+                    <SelectItem key={cat.id}>
+                      {cat.name}
+                    </SelectItem>
+                  ))}
+                </Select>
+                <Tooltip content="Ordenar por id">
+                  <Button
+                    variant="flat"
+                    onPress={() => setSortOrder(prev => prev === 'asc' ? 'desc' : 'asc')}
+                    className=" rounded-xl border border-default-200 md:w-auto min-w-[48px]"
+                  >
+                    {sortOrder === 'asc' ? (
+                      <ArrowUp01 size={20} />
+                    ) : (
+                      <ArrowDown01 size={20} />
+                    )}
+                  </Button>
+                </Tooltip>
+              </div>
+
+              <Button
+                onPress={fromModal.onOpen}
+                color="primary"
+                className="w-full md:w-auto md:min-w-[140px]"
+              >
+                <Plus size={20} />
+                Agregar
+              </Button>
+
+
+            </div>
+
           </div>
           <div className="flex flex-wrap gap-3 pr-2 overflow-y-auto max-h-[calc(100vh-160px)]">
             {
-              workshops.map(workshop => (
+              filteredWorkshops.map(workshop => (
                 <WorkshopCard workshop={workshop} key={workshop.id} categories={categories} onAction={(w, action) => {
                   setSelectedWorkshop(w);
                   if (action === "delete") {
@@ -102,7 +179,7 @@ function WorkshopsPage() {
             }
           </div>
         </div>
-      </main>
+      </main >
     </>
   )
 }

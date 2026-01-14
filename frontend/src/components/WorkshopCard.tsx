@@ -47,7 +47,7 @@ export default function WorkshopCard({
 
       {/* Description */}
       {workshop.description && (
-        <p className="mt-1 text-base text-gray-700">
+        <p className="mt-1 text-base text-default-700">
           {workshop.description}
         </p>
       )}
@@ -63,6 +63,7 @@ export default function WorkshopCard({
             hour12: false,
           })}
         </Chip>
+        <span className="text-default-500 text-small">ID: {workshop.id}</span>
       </div>
     </div>
 
