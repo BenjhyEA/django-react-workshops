@@ -16,7 +16,7 @@ export default function WorkshopCard({
   const getCategoryName = (id: number) => {
     return categories.find(c => c.id === id)?.name ?? "Sin categoría";
   }
-
+  
   return (
     <div className="w-full max-w-4xl rounded-xl border border-default-200 bg-default-50 p-4">
       {/* Header */}
@@ -57,7 +57,11 @@ export default function WorkshopCard({
         {/*  <CalendarDays size={16} className="text-default-400" /> */}
         <Chip variant="dot">
           Inicio:{" "}
-          {new Date(workshop.start_date).toLocaleDateString("es-PE")}
+          {new Date(workshop.start_date).toLocaleString("es-PE", {
+            dateStyle: "short",
+            timeStyle: "short",
+            hour12: false,
+          })}
         </Chip>
       </div>
     </div>
