@@ -1,25 +1,22 @@
 import { Chip, Tooltip } from "@heroui/react";
-import {  EditIcon, Trash2 } from "lucide-react";
+import { EditIcon, Trash2 } from "lucide-react";
 import type { Workshop } from "../types/workshop";
 import type { Category } from "../types/category";
 
-interface WorkshopCardProps {
-  workshop: Workshop;
-  onEdit?: (workshop: Workshop) => void;
-  onDelete?: (id: number) => void;
-  categories: Category[]
-}
-
 export default function WorkshopCard({
   workshop,
-  categories
-}: WorkshopCardProps) 
-{
+  categories,
+  onAction
+}: {
+  workshop: Workshop;
+  onAction: (workshop: Workshop) => void;
+  categories: Category[]
+}) {
 
   const getCategoryName = (id: number) => {
     return categories.find(c => c.id === id)?.name ?? "Sin categoría";
   }
-  
+
   return (
     <div className="w-full max-w-4xl rounded-xl border border-default-200 bg-default-50 p-4">
       {/* Header */}
@@ -36,7 +33,7 @@ export default function WorkshopCard({
           </Tooltip>
 
           <Tooltip color="danger" content="Eliminar">
-            <span className="cursor-pointer text-danger active:opacity-50">
+            <span className="cursor-pointer text-danger active:opacity-50" onClick={() => onAction(workshop)}>
               <Trash2 size={22} />
             </span>
           </Tooltip>
@@ -57,12 +54,14 @@ export default function WorkshopCard({
 
       {/* Footer */}
       <div className="mt-4 flex items-center gap-2">
-       {/*  <CalendarDays size={16} className="text-default-400" /> */}
+        {/*  <CalendarDays size={16} className="text-default-400" /> */}
         <Chip variant="dot">
           Inicio:{" "}
           {new Date(workshop.start_date).toLocaleDateString("es-PE")}
         </Chip>
       </div>
     </div>
+
+    
   );
 }

@@ -1,8 +1,6 @@
 import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Textarea } from "@heroui/react";
 import { useForm } from "react-hook-form";
 import type { Category } from "../types/category";
-import { useEffect, useState } from "react";
-import { getAllCategories } from "../api/category.api";
 import { createWorkshop } from "../api/workshop.api";
 import type { WorkshopForm } from "../types/workshop";
 
@@ -33,7 +31,7 @@ export default function WorkshopModal({
     }
 
     async function setWorkshop (data: WorkshopForm) {
-        const res = await createWorkshop(data);
+        await createWorkshop(data);
         onCreated();
     }
     return (

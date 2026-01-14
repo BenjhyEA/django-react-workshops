@@ -26,3 +26,16 @@ export const createWorkshop = async (workshop: WorkshopForm) => {
 
   return res.json();
 };
+
+export const deleteWorkshop = async (idWorkshop:number) => {
+  const res = await fetch(`${BASE_URL}${idWorkshop}/`, {
+    method: "DELETE",
+  });
+
+  if (!res.ok) {
+    throw new Error(`Error HTTP: ${res.status}`);
+  }
+  
+  return true;
+};
+

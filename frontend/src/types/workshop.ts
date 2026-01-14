@@ -1,5 +1,3 @@
-import type { Category } from "./category";
-
 export interface Workshop {
   id: number;
   name: string;
