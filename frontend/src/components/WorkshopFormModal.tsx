@@ -55,6 +55,7 @@ export default function WorkshopModal({
                             <Input
                                 label="Nombre"
                                 variant="bordered"
+                                isRequired
                                 errorMessage="Porfavor ingresa un nombre"
                                 isInvalid={!!errors.name}
                                 {...register("name", { required: true })}
@@ -64,6 +65,7 @@ export default function WorkshopModal({
                                 label="Fecha de inicio"
                                 type="datetime-local"
                                 variant="bordered"
+                                isRequired
                                 placeholder="Ingresa fecha"
                                 errorMessage={errors.start_date?.message as string}
                                 isInvalid={!!errors.start_date}
@@ -76,6 +78,7 @@ export default function WorkshopModal({
                             <Select
                                 label="Categoría"
                                 variant="bordered"
+                                isRequired
                                 errorMessage="Porfavor seleciona una categoría"
                                 placeholder="Selecciona una categoría"
                                 isInvalid={!!errors.category}
@@ -95,6 +98,7 @@ export default function WorkshopModal({
                             {/* Columna derecha */}
                             <Textarea
                                 label="Descripción"
+                                isRequired
                                 errorMessage="Porfavor ingresa una descripción"
                                 isInvalid={!!errors.description}
                                 variant="bordered"

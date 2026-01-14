@@ -6,8 +6,7 @@ import { editWorkshop } from "../api/workshop.api";
 import { useEffect } from "react";
 
 
-
-export default function EeditWorkshopModal({
+export default function EditWorkshopModal({
     isOpen,
     onOpenChange,
     onEdit,
@@ -18,21 +17,20 @@ export default function EeditWorkshopModal({
     onOpenChange: () => void;
     onEdit: () => void;
     categories: Category[];
-    workshopSelect: Workshop
+    workshopSelect: Workshop;
 }) {
-    const { register, handleSubmit, reset, formState: { errors }, setValue } = useForm();
+    const { register, handleSubmit, reset, formState: { errors } } = useForm<WorkshopForm>();
 
     useEffect(() => {
-        if (!workshopSelect) return;
-
-        setValue("name", workshopSelect.name);
-        setValue("description", workshopSelect.description);
-        setValue(
-            "start_date",
-            workshopSelect.start_date.slice(0, 16)
-        );
-        setValue("category", workshopSelect.category);
-    }, [workshopSelect, setValue]);
+        if (workshopSelect) {
+            reset({
+                name: workshopSelect.name,
+                description: workshopSelect.description,
+                start_date: workshopSelect.start_date.slice(0, 16),
+                category: workshopSelect.category,
+            });
+        }
+    }, [workshopSelect, reset]);
 
     function validateDate(value: string) {
         const selectedDate = new Date(value);
@@ -45,95 +43,86 @@ export default function EeditWorkshopModal({
         return true;
     }
 
-    async function setWorkshop(data: WorkshopForm) {
+    const onSubmit = async (data: WorkshopForm, onClose: () => void) => {
         if (!workshopSelect) return;
         await editWorkshop(workshopSelect.id, data);
         onEdit();
-    }
-
+        onClose();
+        reset();
+    };
 
     return (
         <Modal
             isOpen={isOpen}
             placement="top-center"
             backdrop="blur"
-            onOpenChange={onOpenChange}>
-
+            onOpenChange={() => {
+                reset()
+                onOpenChange();
+            }}
+        >
             <ModalContent>
                 {(onClose) => (
-                    <form onSubmit={handleSubmit((data) => {
-                        reset();
-                        onClose();
-                        setWorkshop(data as WorkshopForm)
-                    })}>
+                    <form onSubmit={handleSubmit((data) => onSubmit(data, onClose))}>
                         <ModalHeader>Editar Taller</ModalHeader>
-
                         <ModalBody className="gap-4">
-
                             <Input
                                 label="Nombre"
                                 variant="bordered"
-                                errorMessage="Porfavor ingresa un nombre"
+                                isRequired
                                 isInvalid={!!errors.name}
-                                {...register("name", { required: true })}
+                                {...register("name", { required: "El nombre es obligatorio" })}
                             />
-
                             <Input
                                 label="Fecha de inicio"
                                 type="datetime-local"
                                 variant="bordered"
-                                placeholder="Ingresa fecha"
-                                errorMessage={errors.start_date?.message as string}
+                                isRequired
                                 isInvalid={!!errors.start_date}
+                                errorMessage={errors.start_date?.message as string}
                                 {...register("start_date", {
                                     required: "La fecha es obligatoria",
                                     validate: validateDate,
                                 })}
                             />
-
                             <Select
                                 label="Categoría"
                                 variant="bordered"
-                                errorMessage="Porfavor seleciona una categoría"
                                 placeholder="Selecciona una categoría"
+                                isRequired
                                 isInvalid={!!errors.category}
+                                errorMessage={errors.category?.message as string}
                                 {...register("category", {
-                                    required: true,
+                                    required: "Por favor selecciona una categoría",
                                     valueAsNumber: true,
                                 })}
                             >
-                                {categories.map((cat) => (
-                                    <SelectItem key={cat.id}>
-                                        {cat.name}
-                                    </SelectItem>
+                                {categories.map(cat => (
+                                    <SelectItem key={cat.id} >{cat.name}</SelectItem>
                                 ))}
                             </Select>
-
-
-                            {/* Columna derecha */}
                             <Textarea
                                 label="Descripción"
-                                errorMessage="Porfavor ingresa una descripción"
-                                isInvalid={!!errors.description}
                                 variant="bordered"
                                 minRows={6}
-                                {...register("description", { required: true })
-
-                                }
+                                isRequired
+                                isInvalid={!!errors.description}
+                                errorMessage={errors.description?.message as string}
+                                {...register("description", { required: "Por favor ingresa una descripción" })}
                             />
-
                         </ModalBody>
-
                         <ModalFooter>
                             <Button
                                 color="danger"
                                 variant="flat"
-                                onPress={onClose}>
+                                onPress={() => {
+                                    onClose();
+                                    reset();
+                                }}
+                            >
                                 Cancelar
                             </Button>
-                            <Button color="primary" type="submit">
-                                Guardar
-                            </Button>
+                            <Button color="primary" type="submit">Guardar</Button>
                         </ModalFooter>
                     </form>
                 )}
@@ -141,3 +130,4 @@ export default function EeditWorkshopModal({
         </Modal>
     );
 }
+
