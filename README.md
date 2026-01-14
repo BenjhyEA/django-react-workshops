@@ -39,6 +39,7 @@ pip install -r requirements.txt
 ```
 
 5. **Aplicar migraciones y crear superusuario:**
+Solo si deseas restablecer la bd, borra el archivo `db.sqlite3` luego ejecutas lo siguiente. El repositorio contiene con una bd por defecto
 
 ```bash
 python manage.py migrate
