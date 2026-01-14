@@ -9,7 +9,7 @@ export default function WorkshopCard({
   onAction
 }: {
   workshop: Workshop;
-  onAction: (workshop: Workshop) => void;
+  onAction: (workshop: Workshop,action: string) => void;
   categories: Category[]
 }) {
 
@@ -27,13 +27,13 @@ export default function WorkshopCard({
 
         <div className="flex gap-3">
           <Tooltip content="Editar">
-            <span className="cursor-pointer text-default-400 active:opacity-50">
+            <span className="cursor-pointer text-default-400 active:opacity-50" onClick={() => onAction(workshop,"edit" )}>
               <EditIcon size={22} />
             </span>
           </Tooltip>
 
           <Tooltip color="danger" content="Eliminar">
-            <span className="cursor-pointer text-danger active:opacity-50" onClick={() => onAction(workshop)}>
+            <span className="cursor-pointer text-danger active:opacity-50" onClick={() => onAction(workshop,"delete" )}>
               <Trash2 size={22} />
             </span>
           </Tooltip>

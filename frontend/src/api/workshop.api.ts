@@ -39,3 +39,18 @@ export const deleteWorkshop = async (idWorkshop:number) => {
   return true;
 };
 
+export const editWorkshop = async (id: number, workshop: WorkshopForm) => {
+  const res = await fetch(`${BASE_URL}${id}/`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(workshop),
+  });
+
+  if (!res.ok) {
+    throw new Error(`Error HTTP: ${res.status}`);
+  }
+
+  return res.json();
+};
