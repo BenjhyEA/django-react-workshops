@@ -122,5 +122,10 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 # autorizacion de cors
-CORS_ALLOWED_ORIGINS = [
-]
+CORS_ALLOWED_ORIGINS = ["http://localhost:5173"]
+
+REST_FRAMEWORK = {
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.AllowAny",
+    ]
+}
