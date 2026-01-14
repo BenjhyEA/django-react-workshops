@@ -66,7 +66,7 @@ export default function EeditWorkshopModal({
                         onClose();
                         setWorkshop(data as WorkshopForm)
                     })}>
-                        <ModalHeader>Registrar Taller</ModalHeader>
+                        <ModalHeader>Editar Taller</ModalHeader>
 
                         <ModalBody className="gap-4">
 
