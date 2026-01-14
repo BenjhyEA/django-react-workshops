@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import type { Workshop } from "../types/workshop";
 import type { Category } from "../types/category";
 import { getAllCategories } from "../api/category.api";
-import EditWorkshopModal from "../components/editWorkshopModal";
+import EditWorkshopModal from "../components/EditWorkshopModal";
 
 
 function WorkshopsPage() {
