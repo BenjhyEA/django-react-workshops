@@ -52,7 +52,7 @@ python manage.py createsuperuser
 python manage.py runserver
 ```
 
-El backend estará disponible en: [http://localhost:8000](http://localhostlocalhost:8000)
+El backend estará disponible en: [http://localhost:8000](http://localhost:8000)
 
 ## ⚛️ Instalación del Frontend (React)
 
