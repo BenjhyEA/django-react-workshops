@@ -207,38 +207,44 @@ function WorkshopsPage() {
                   No hay talleres registrados
                 </p>
 
-                <div className="flex items-center gap-1 text-sm">
-                  <span>
-                    Si no tienes categorías registradas, regístralas en
-                  </span>
+                {categories.length === 0 && (
+                  <div className="flex items-center gap-1 text-sm">
+                    <span>
+                      Si no tienes categorías registradas, regístralas en
+                    </span>
+                    <span
+                      className="flex items-center gap-1 font-medium text-primary cursor-pointer"
+                      onClick={categoryModal.onOpen}
+                    >
+                      Gestionar categoría
+                      <LayersPlus size={18} />
+                    </span>
+                  </div>
+                )}
 
-                  <span className="flex items-center gap-1 font-medium text-primary cursor-pointer"  onClick={categoryModal.onOpen}>
-                    Gestionar categoría
-                    <LayersPlus size={18} />
-                  </span>
-                </div>
+              
               </div>
-            ) : (
-              <div className="flex flex-wrap gap-3">
-                {filteredWorkshops.map((workshop) => (
-                  <WorkshopCard
-                    key={workshop.id}
-                    workshop={workshop}
-                    categories={categories}
-                    onAction={(w, action) => {
-                      setSelectedWorkshop(w);
+          ) : (
+          <div className="flex flex-wrap gap-3">
+            {filteredWorkshops.map((workshop) => (
+              <WorkshopCard
+                key={workshop.id}
+                workshop={workshop}
+                categories={categories}
+                onAction={(w, action) => {
+                  setSelectedWorkshop(w);
 
-                      if (action === "delete") deleteModal.onOpen();
-                      if (action === "edit") editModal.onOpen();
-                    }}
-                  />
-                ))}
-              </div>
-            )}
+                  if (action === "delete") deleteModal.onOpen();
+                  if (action === "edit") editModal.onOpen();
+                }}
+              />
+            ))}
           </div>
-
+            )}
         </div>
-      </main >
+
+      </div>
+    </main >
     </>
   )
 }
