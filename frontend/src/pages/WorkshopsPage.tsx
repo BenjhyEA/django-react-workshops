@@ -2,7 +2,7 @@ import { Button, Input, Select, SelectItem, Tooltip, useDisclosure } from "@hero
 import WorkshopCard from "../components/WorkshopCard";
 import WorkshopModal from "../components/WorkshopFormModal";
 import ConfirmDeleteModal from "../components/ConfirmDeleteModal";
-import { ArrowDown01, ArrowUp01, MoonIcon, Plus, SearchIcon, SunIcon } from "lucide-react";
+import { ArrowDown01, ArrowUp01, LayersPlus, MoonIcon, Plus, SearchIcon, SunIcon } from "lucide-react";
 import { deleteWorkshop, getAllWorkshops } from "../api/workshop.api";
 import { useEffect, useState } from "react";
 import type { Workshop } from "../types/workshop";
@@ -10,6 +10,7 @@ import type { Category } from "../types/category";
 import { getAllCategories } from "../api/category.api";
 import EditWorkshopModal from "../components/EditWorkshopModal";
 import { useTheme } from "@heroui/use-theme";
+import CategoryManagementModal from "../components/CategoryManagementModal";
 
 function WorkshopsPage() {
   const { theme, setTheme } = useTheme()
@@ -17,6 +18,7 @@ function WorkshopsPage() {
   const fromModal = useDisclosure();
   const deleteModal = useDisclosure();
   const editModal = useDisclosure();
+  const categoryModal = useDisclosure();
 
   const [workshops, setWorkshops] = useState<Workshop[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -96,6 +98,7 @@ function WorkshopsPage() {
             : ""
         }
       />
+
       {selectedWorkshop && (
         <EditWorkshopModal
           isOpen={editModal.isOpen}
@@ -106,7 +109,22 @@ function WorkshopsPage() {
         />
       )}
 
-      <div className="fixed top-4 right-4 z-50 gap">
+      <CategoryManagementModal
+        isOpen={categoryModal.isOpen}
+        onOpenChange={categoryModal.onOpenChange} categories={categories} loadCategories={loadcategories} />
+      {/* Buttons */}
+      <div className=" fixed flex top-4 right-4 z-50 gap-2">
+        <Tooltip content="Gestionar categorias">
+          <Button
+            isIconOnly
+            variant="flat"
+            onPress={categoryModal.onOpen}
+            className="rounded-full border border-default-200"
+            aria-label="Cambiar tema"
+          >
+            <LayersPlus size={20} />
+          </Button>
+        </Tooltip>
         <Tooltip content={theme === 'light' ? 'Modo oscuro' : 'Modo claro'}>
           <Button
             isIconOnly
@@ -116,7 +134,7 @@ function WorkshopsPage() {
             aria-label="Cambiar tema"
           >
             {theme === 'light' ? <MoonIcon size={20} /> : <SunIcon size={20} />}
-          </Button>
+          </Button >
         </Tooltip>
       </div>
 
@@ -182,22 +200,43 @@ function WorkshopsPage() {
           </div>
 
 
-          <div className="flex flex-wrap gap-3 pr-2 overflow-y-auto max-h-[calc(100vh-160px)]">
-            {
-              filteredWorkshops.map(workshop => (
-                <WorkshopCard workshop={workshop} key={workshop.id} categories={categories} onAction={(w, action) => {
-                  setSelectedWorkshop(w);
-                  if (action === "delete") {
-                    deleteModal.onOpen();
-                  }
+          <div className="pr-2 overflow-y-auto max-h-[calc(100vh-160px)]">
+            {filteredWorkshops.length === 0 ? (
+              <div className="flex flex-col items-center justify-center h-full text-center gap-2 text-default-500">
+                <p className="text-lg font-medium">
+                  No hay talleres registrados
+                </p>
 
-                  if (action === "edit") {
-                    editModal.onOpen();
-                  }
-                }} />
-              ))
-            }
+                <div className="flex items-center gap-1 text-sm">
+                  <span>
+                    Si no tienes categorías registradas, regístralas en
+                  </span>
+
+                  <span className="flex items-center gap-1 font-medium text-primary cursor-pointer"  onClick={categoryModal.onOpen}>
+                    Gestionar categoría
+                    <LayersPlus size={18} />
+                  </span>
+                </div>
+              </div>
+            ) : (
+              <div className="flex flex-wrap gap-3">
+                {filteredWorkshops.map((workshop) => (
+                  <WorkshopCard
+                    key={workshop.id}
+                    workshop={workshop}
+                    categories={categories}
+                    onAction={(w, action) => {
+                      setSelectedWorkshop(w);
+
+                      if (action === "delete") deleteModal.onOpen();
+                      if (action === "edit") editModal.onOpen();
+                    }}
+                  />
+                ))}
+              </div>
+            )}
           </div>
+
         </div>
       </main >
     </>
