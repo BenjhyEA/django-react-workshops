@@ -200,7 +200,7 @@ function WorkshopsPage() {
           </div>
 
 
-          <div className="pr-2 overflow-y-auto max-h-[calc(100vh-160px)]">
+          <div className="pr-2 overflow-y-auto max-h-[calc(100vh-160px)] max-md:max-h-[calc(100vh-260px)]">
             {filteredWorkshops.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-full text-center gap-2 text-default-500">
                 <p className="text-lg font-medium">
