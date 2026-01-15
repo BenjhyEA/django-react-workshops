@@ -2,16 +2,18 @@ import { Button, Input, Select, SelectItem, Tooltip, useDisclosure } from "@hero
 import WorkshopCard from "../components/WorkshopCard";
 import WorkshopModal from "../components/WorkshopFormModal";
 import ConfirmDeleteModal from "../components/ConfirmDeleteModal";
-import { ArrowDown01, ArrowUp01, Plus, SearchIcon } from "lucide-react";
+import { ArrowDown01, ArrowUp01, MoonIcon, Plus, SearchIcon, SunIcon } from "lucide-react";
 import { deleteWorkshop, getAllWorkshops } from "../api/workshop.api";
 import { useEffect, useState } from "react";
 import type { Workshop } from "../types/workshop";
 import type { Category } from "../types/category";
 import { getAllCategories } from "../api/category.api";
 import EditWorkshopModal from "../components/EditWorkshopModal";
-
+import { useTheme } from "@heroui/use-theme";
 
 function WorkshopsPage() {
+  const { theme, setTheme } = useTheme()
+
   const fromModal = useDisclosure();
   const deleteModal = useDisclosure();
   const editModal = useDisclosure();
@@ -69,6 +71,10 @@ function WorkshopsPage() {
     setSelectedWorkshop(null);
   };
 
+  const toggleTheme = () => {
+    setTheme(theme === 'light' ? 'dark' : 'light');
+  };
+
 
   return (
     <>
@@ -99,69 +105,83 @@ function WorkshopsPage() {
           workshopSelect={selectedWorkshop}
         />
       )}
+
+      <div className="fixed top-4 right-4 z-50 gap">
+        <Tooltip content={theme === 'light' ? 'Modo oscuro' : 'Modo claro'}>
+          <Button
+            isIconOnly
+            variant="flat"
+            onPress={toggleTheme}
+            className="rounded-full border border-default-200"
+            aria-label="Cambiar tema"
+          >
+            {theme === 'light' ? <MoonIcon size={20} /> : <SunIcon size={20} />}
+          </Button>
+        </Tooltip>
+      </div>
+
       {/* Main */}
       <main className="min-h-screen flex justify-center ">
         <div className="w-200 mt-5 p-4">
           <h1 className="text-3xl font-semibold" >Catálogo de Talleres</h1>
-          <div className=" my-3">
-            <div className="my-3 flex flex-col md:flex-row md:items-center gap-2">
-              <Input
-                isClearable
-                className="w-full md:flex-[2] rounded-xl border border-default-200"
-                placeholder="Buscar taller..."
-                startContent={<SearchIcon />}
-                value={searchTerm}
-                onValueChange={(e) => setSearchTerm(e)}
-              />
+          <div className="my-3 flex flex-col md:flex-row md:items-center gap-2">
+            <Input
+              isClearable
+              className="w-full md:flex-[2] rounded-xl border border-default-200"
+              placeholder="Buscar taller..."
+              startContent={<SearchIcon />}
+              value={searchTerm}
+              onValueChange={(e) => setSearchTerm(e)}
+            />
 
-              <div className="flex gap-2 w-full md:flex-1 md:min-w-[250px]">
+            <div className="flex gap-2 w-full md:flex-1 md:min-w-[250px]">
 
-                <Select
-                  className="flex-1 rounded-xl border border-default-200"
-                  selectedKeys={categoryFilter !== null ? [String(categoryFilter)] : ["all"]}
-                  onSelectionChange={(keys) => {
-                    const selectedKey = Array.from(keys)[0];
-                    setCategoryFilter(selectedKey === "all" ? null : Number(selectedKey));
-                  }}
-                  placeholder="Todas las categorías"
-                >
-                  {[
-                    { id: "all", name: "Todas las categorías" },
-                    ...categories.map(cat => ({ id: String(cat.id), name: cat.name }))
-                  ].map((cat) => (
-                    <SelectItem key={cat.id}>
-                      {cat.name}
-                    </SelectItem>
-                  ))}
-                </Select>
-                <Tooltip content="Ordenar por id">
-                  <Button
-                    variant="flat"
-                    onPress={() => setSortOrder(prev => prev === 'asc' ? 'desc' : 'asc')}
-                    className=" rounded-xl border border-default-200 md:w-auto min-w-[48px]"
-                  >
-                    {sortOrder === 'asc' ? (
-                      <ArrowUp01 size={20} />
-                    ) : (
-                      <ArrowDown01 size={20} />
-                    )}
-                  </Button>
-                </Tooltip>
-              </div>
-
-              <Button
-                onPress={fromModal.onOpen}
-                color="primary"
-                className="w-full md:w-auto md:min-w-[140px]"
+              <Select
+                className="flex-1 rounded-xl border border-default-200"
+                selectedKeys={categoryFilter !== null ? [String(categoryFilter)] : ["all"]}
+                onSelectionChange={(keys) => {
+                  const selectedKey = Array.from(keys)[0];
+                  setCategoryFilter(selectedKey === "all" ? null : Number(selectedKey));
+                }}
+                placeholder="Todas las categorías"
               >
-                <Plus size={20} />
-                Agregar
-              </Button>
-
-
+                {[
+                  { id: "all", name: "Todas las categorías" },
+                  ...categories.map(cat => ({ id: String(cat.id), name: cat.name }))
+                ].map((cat) => (
+                  <SelectItem key={cat.id}>
+                    {cat.name}
+                  </SelectItem>
+                ))}
+              </Select>
+              <Tooltip content="Ordenar por id">
+                <Button
+                  variant="flat"
+                  onPress={() => setSortOrder(prev => prev === 'asc' ? 'desc' : 'asc')}
+                  className=" rounded-xl border border-default-200 md:w-auto min-w-[48px]"
+                >
+                  {sortOrder === 'asc' ? (
+                    <ArrowUp01 size={20} />
+                  ) : (
+                    <ArrowDown01 size={20} />
+                  )}
+                </Button>
+              </Tooltip>
             </div>
 
+            <Button
+              onPress={fromModal.onOpen}
+              color="primary"
+              className="w-full md:w-auto md:min-w-[140px]"
+            >
+              <Plus size={20} />
+              Agregar
+            </Button>
+
+
           </div>
+
+
           <div className="flex flex-wrap gap-3 pr-2 overflow-y-auto max-h-[calc(100vh-160px)]">
             {
               filteredWorkshops.map(workshop => (
@@ -185,3 +205,4 @@ function WorkshopsPage() {
 }
 
 export default WorkshopsPage
+
