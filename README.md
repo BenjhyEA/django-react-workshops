@@ -53,7 +53,9 @@ python manage.py createsuperuser
 python manage.py runserver
 ```
 
-El backend estará disponible en: [http://localhost:8000](http://localhost:8000)
+El backend estará disponible en: [http://localhost:8000](http://localhost:8000) saldra `Page not found (404)`
+
+La api estará en: [http://localhost:8000/whorshop/api/v1/](http://localhost:8000/whorshop/api/v1/)
 
 ## ⚛️ Instalación del Frontend (React)
 
